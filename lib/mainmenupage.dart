@@ -7,18 +7,16 @@ import 'settingsjson.dart';
 
 class MainMenu extends StatefulWidget {
 
-  const MainMenu({Key? key, required this.userId}) : super(key: key);
+  const MainMenu({Key? key, required this.userId, required this.token}) : super(key: key);
 
   final String userId;
+  final String token;
 
   @override
   State<MainMenu> createState() => _MainMenuState();
-
 }
 
 class _MainMenuState extends State<MainMenu> {
-  //String? stringy = tokenstring;
-
   List<Settings>? settings;
   List<Settings> listedSettings = [];
   bool isLoaded = false;
@@ -31,17 +29,13 @@ class _MainMenuState extends State<MainMenu> {
   }
 
   getData() async {
-    settings = await RemoteService().getSettings();
+    settings = await RemoteService().getSettings(widget.token);
     if (settings != null) {
       setState(() {
         isLoaded = true;
       });
       listedSettings = settings!.where((element) => element.userId == widget.userId).toList();
-      print("listedsettings0: ");
-      print(listedSettings[0].numToDos);
       maxLength = listedSettings?[0].numToDos;
-      print("maxlength:");
-      print(maxLength);
     } else {}
   }
 
@@ -56,16 +50,15 @@ class _MainMenuState extends State<MainMenu> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.userId);
     return Scaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            navButton("To do today", (TodaysTodos(userId: widget.userId, maxLength: maxLength))),
-            navButton("Add new todo", AddNewTodoPage(userId: widget.userId)),
+            navButton("To do today", (TodaysTodos(userId: widget.userId, maxLength: maxLength, token: widget.token))),
+            navButton("Add new todo", AddNewTodoPage(userId: widget.userId, token: widget.token)),
             //navButton("Add new ongoing", AddNewOngoingPage()),
-            navButton("Settings", SettingsPage(userId: widget.userId,)),
+            navButton("Settings", SettingsPage(userId: widget.userId, token: widget.token)),
           ],
         ),
       ),

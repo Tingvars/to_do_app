@@ -5,9 +5,10 @@ import 'remote_service.dart';
 import 'settingsjson.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({Key? key, required this.userId}) : super(key: key);
+  const SettingsPage({Key? key, required this.userId, required this.token}) : super(key: key);
 
   final String userId;
+  final String token;
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -26,7 +27,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   getData() async {
-    settings = await RemoteService().getSettings();
+    settings = await RemoteService().getSettings(widget.token);
     if (settings != null) {
       setState(() {
         isLoaded = true;
@@ -82,20 +83,18 @@ class _SettingsPageState extends State<SettingsPage> {
                 textStyle: const TextStyle(fontSize: 15),
               ),
               onPressed: () async{
-print(enteredNumTodos);
-
                Settings? updatedSettings = Settings(settingsId: listedSettings?[0].settingsId, numToDos: enteredNumTodos, userId: widget.userId
                 );
-                var response = await RemoteService().editSettings(listedSettings?[0].settingsId, updatedSettings).catchError((err) {});
+                var response = await RemoteService().editSettings(listedSettings?[0].settingsId, updatedSettings, widget.token).catchError((err) {});
                 if (response == null) return;
 
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => TodaysTodos(userId: widget.userId, maxLength: enteredNumTodos),
+                      builder: (context) => TodaysTodos(userId: widget.userId, maxLength: enteredNumTodos, token: widget.token),
                     ));
               },
-              child: const Text('Create'),
+              child: const Text('Update'),
             ),
 
             TextButton(
@@ -109,7 +108,7 @@ print(enteredNumTodos);
                     context,
                     MaterialPageRoute(
                       //The 0s are values for turnCounter and rightCounter, to reset them when new game starts:
-                      builder: (context) => MainMenu(userId: widget.userId,),
+                      builder: (context) => MainMenu(userId: widget.userId, token: widget.token),
                     ));
               },
               child: const Text('Back to main menu'),

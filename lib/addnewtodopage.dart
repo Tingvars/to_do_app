@@ -6,9 +6,10 @@ import 'remote_service.dart';
 
 class AddNewTodoPage extends StatefulWidget {
 
-  const AddNewTodoPage({Key? key, required this.userId}) : super(key: key);
+  const AddNewTodoPage({Key? key, required this.userId, required this.token}) : super(key: key);
 
   final String userId;
+  final String token;
 
   @override
   State<AddNewTodoPage> createState() => _AddNewTodoPageState();
@@ -98,7 +99,7 @@ class _AddNewTodoPageState extends State<AddNewTodoPage> {
                         onChanged: (text) {
                           enteredTodoTitle = text;
                         },
-                        initialValue: "...")
+                        initialValue: "")
                     )
                     ],
                     ),
@@ -155,14 +156,12 @@ class _AddNewTodoPageState extends State<AddNewTodoPage> {
 
                           Todo newTodo = Todo(title: enteredTodoTitle, importance: enteredTodoImportance, dueBy: dueDateTime.toIso8601String(), userId: widget.userId
                           );
-                          var response = await RemoteService().createTodo(newTodo).catchError((err) {});
+                          var response = await RemoteService().createTodo(newTodo, widget.token).catchError((err) {});
                           if (response == null) return;
-                          print("next line is widget.userid:");
-print(widget.userId);
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => AddNewTodoPage(userId: widget.userId,),
+                                builder: (context) => AddNewTodoPage(userId: widget.userId, token: widget.token),
                               ));
                         },
                         child: const Text('Create'),
@@ -172,7 +171,7 @@ print(widget.userId);
                 ),
               ),
             ),
-            navButton("Back to main menu", MainMenu(userId: widget.userId)),
+            navButton("Back to main menu", MainMenu(userId: widget.userId, token: widget.token)),
           ],
         ),
 

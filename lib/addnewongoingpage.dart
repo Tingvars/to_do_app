@@ -3,7 +3,9 @@ import 'firstpage.dart';
 import 'mainmenupage.dart';
 
 class AddNewOngoingPage extends StatefulWidget {
-  const AddNewOngoingPage({Key? key}) : super(key: key);
+  const AddNewOngoingPage({Key? key, required this.token}) : super(key: key);
+
+  final String token;
 
   @override
   State<AddNewOngoingPage> createState() => _AddNewOngoingPageState();
@@ -38,7 +40,7 @@ class _AddNewOngoingPageState extends State<AddNewOngoingPage> {
                     context,
                     MaterialPageRoute(
                       //The 0s are values for turnCounter and rightCounter, to reset them when new game starts:
-                      builder: (context) => MainMenu(userId: "",),
+                      builder: (context) => MainMenu(userId: "", token: widget.token),
                     ));
               },
               child: const Text('Back to main menu'),

@@ -3,14 +3,14 @@ import 'mainmenupage.dart';
 import 'addnewtodopage.dart';
 import 'todojson.dart';
 import 'remote_service.dart';
-import 'settingsjson.dart';
 
 class TodaysTodos extends StatefulWidget {
 
-  const TodaysTodos({Key? key, required this.userId, required this.maxLength}) : super(key: key);
+  const TodaysTodos({Key? key, required this.userId, required this.maxLength, required this.token}) : super(key: key);
 
   final String userId;
   final int maxLength;
+  final String token;
 
   @override
   State<TodaysTodos> createState() => _TodaysTodosState();
@@ -24,20 +24,16 @@ class _TodaysTodosState extends State<TodaysTodos> {
   @override
   void initState() {
     super.initState();
-    print("settings maxlength: ");
-    print(widget.maxLength);
     getToDoData();
   }
 
   getToDoData() async {
-    todos = await RemoteService().getTodos();
+    todos = await RemoteService().getTodos(widget.token);
     if (todos != null) {
 
       setState(() {
         isLoadedToDo = true;
       });
-      print("maxlength within todo getter:");
-      print(widget.maxLength);
       //listing things, by userid:
       listedTodos = todos!.where((element) => element.userId == widget.userId).toList();
       //sort things here by importance etc.:
@@ -65,8 +61,8 @@ class _TodaysTodosState extends State<TodaysTodos> {
           Column(children: [
             for (Todo todo in listedTodos) todoItem(todo, todo.title),
           ]),
-          navButton("Add new todo", AddNewTodoPage(userId: widget.userId)),
-          navButton("Back to main menu", MainMenu(userId: widget.userId,)),
+          navButton("Add new todo", AddNewTodoPage(userId: widget.userId, token: widget.token)),
+          navButton("Back to main menu", MainMenu(userId: widget.userId, token: widget.token)),
         ],
       ),
     ));
@@ -224,10 +220,10 @@ class _TodaysTodosState extends State<TodaysTodos> {
 
                                   Todo? newTodo = Todo(toDoId: todo.toDoId, title: editedToDoTitle, importance: editedToDoImportance, dueBy: editedDate.toIso8601String(), userId: widget.userId
                                   );
-                                  var response = await RemoteService().editTodo(todo.toDoId, newTodo).catchError((err) {});
+                                  var response = await RemoteService().editTodo(todo.toDoId, newTodo, widget.token).catchError((err) {});
                                   if (response == null) return;
 
-                                  navigateToPage(TodaysTodos(userId: widget.userId, maxLength: widget.maxLength,));
+                                  navigateToPage(TodaysTodos(userId: widget.userId, maxLength: widget.maxLength, token: widget.token));
 
                                   Navigator.of(context).pop();
 
@@ -268,10 +264,10 @@ class _TodaysTodosState extends State<TodaysTodos> {
       onPressed: () async {
         Todo? newTodo = Todo(toDoId: id, title: "", importance: 0, dueBy: DateTime.now().toIso8601String(), userId: widget.userId
         );
-        var response = await RemoteService().deleteTodo(id, newTodo).catchError((err) {});
+        var response = await RemoteService().deleteTodo(id, newTodo, widget.token).catchError((err) {});
         if (response == null) return;
 
-        navigateToPage(TodaysTodos(userId: widget.userId, maxLength: widget.maxLength,));
+        navigateToPage(TodaysTodos(userId: widget.userId, maxLength: widget.maxLength, token: widget.token));
       },
       child: Text(buttonString),
     );
