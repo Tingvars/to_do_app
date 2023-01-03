@@ -2,13 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'todojson.dart';
 import 'settingsjson.dart';
-import"authorizationjson.dart";
+import "authorizationjson.dart";
 
 class RemoteService {
   String decodedToken = "";
 
-  Future<List<Todo>?> getTodos(String token) async
-  {
+  Future<List<Todo>?> getTodos(String token) async {
     var client = http.Client();
 
     var uri = Uri.parse("https://localhost:7019/api/ToDos");
@@ -50,8 +49,7 @@ class RemoteService {
     var response = await client.put(url, body: _payload, headers: _headers);
     if (response.statusCode == 200) {
       return response.body;
-    } else {
-    }
+    } else {}
   }
 
   Future<dynamic> deleteTodo(int? id, dynamic object, String token) async {
@@ -66,12 +64,10 @@ class RemoteService {
     var response = await client.delete(url, body: _payload, headers: _headers);
     if (response.statusCode == 200) {
       return response.body;
-    } else {
-    }
+    } else {}
   }
 
-  Future<List<Settings>?> getSettings(String token) async
-  {
+  Future<List<Settings>?> getSettings(String token) async {
     var client = http.Client();
 
     var uri = Uri.parse("https://localhost:7019/api/Settings");
@@ -96,8 +92,7 @@ class RemoteService {
 
     if (response.statusCode == 201) {
       return response.body;
-    } else {
-    }
+    } else {}
   }
 
   Future<dynamic> editSettings(int id, dynamic object, String token) async {
@@ -111,10 +106,8 @@ class RemoteService {
 
     var response = await client.put(url, body: _payload, headers: _headers);
     if (response.statusCode == 200) {
-
       return response.body;
-    } else {
-    }
+    } else {}
   }
 
   String getToken() {
@@ -151,11 +144,9 @@ class RemoteService {
     var response = await client.post(url, body: _payload, headers: _headers);
 
     if (response.statusCode == 200) {
-
       decodedToken = json.decode(response.body)['token'];
 
       return decodedToken;
-
     } else {
       throw Future.error("invalid user");
     }
