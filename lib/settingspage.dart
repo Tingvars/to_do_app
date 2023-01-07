@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_app/todaystodospage.dart';
 import 'mainmenupage.dart';
-import 'remote_service.dart';
-import 'settingsjson.dart';
+import 'jsonComponents/remote_service.dart';
+import 'jsonComponents/settingsjson.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Components/navButton.dart';
-import 'package:counter_button/counter_button.dart';
+import 'Components/counterButton.dart';
+import 'firstpage.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key, required this.userId, required this.token})
@@ -53,6 +54,8 @@ class _SettingsPageState extends State<SettingsPage> {
     } else {}
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     if (initialPageLoad) {
@@ -80,7 +83,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Padding(
               padding: const EdgeInsets.only(bottom: 20.0),
               child: Text(
-                "Page to change settings",
+                "Settings",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontFamily: 'Viking',
@@ -94,7 +97,19 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Container(
                 width: 350.0,
                 height: 150.0,
-                color: Colors.cyan,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topRight,
+                      end: Alignment(0.5, -0.5),
+                      colors: [
+                        color3,
+                        color4,
+                      ],
+                    ),
+                    border: Border.all(color: color3),
+                    borderRadius: BorderRadius.all(Radius.circular(90)),
+                ),
+                //color: Colors.cyan,
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -113,20 +128,40 @@ class _SettingsPageState extends State<SettingsPage> {
                             },
                             count: enteredNumTodos,
                             countColor: Colors.purple,
-                            buttonColor: Colors.purpleAccent,
+                            buttonColor: color3,
                             progressColor: Colors.purpleAccent,
+                           // border: Border.all(width: 0.5),
+                          //  borderRadius: BorderRadius.circular(4.0),
                           ),
                       )
-                    ]),
+                    ]
+                ),
               ),
             ),
             //Update button:
             TextButton(
-              style: TextButton.styleFrom(
+              child: Container(
+                width: 140,
+                decoration: BoxDecoration(
+                    border: Border.all(color: color3),
+                    gradient: LinearGradient(
+                      begin: Alignment.topRight,
+                      end: Alignment(-0.1, -0.1),
+                      colors: [
+                        color6,
+                        color5,
+                      ],
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(90))
+                ),
                 padding: const EdgeInsets.all(16.0),
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.red,
-                textStyle: const TextStyle(fontSize: 15),
+                child: Text("Update settings",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Viking',
+                    fontSize: 15,
+                    color: Colors.black,
+                  ),),
               ),
               onPressed: () async {
                 Settings? updatedSettings = Settings(
@@ -146,7 +181,6 @@ class _SettingsPageState extends State<SettingsPage> {
                           token: token),
                     ));
               },
-              child: const Text('Update'),
             ),
             Column(
               children: [
@@ -155,6 +189,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 )
               ],
             ),
+
             navButton(buttonString: "Back to main menu", function: MainMenu(token: token)),
           ],
         ),

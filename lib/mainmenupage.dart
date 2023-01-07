@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'todaystodospage.dart';
 import 'addnewtodopage.dart';
 import 'settingspage.dart';
-import 'remote_service.dart';
-import 'settingsjson.dart';
+import 'jsonComponents/remote_service.dart';
+import 'jsonComponents/settingsjson.dart';
 import 'firstpage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -27,6 +27,8 @@ class _MainMenuState extends State<MainMenu> {
   int maxLength = 0;
   String token = "";
   String userId = "";
+
+
 
   Color color1 = Color(0XFF89143B); //dark red
   Color color2 = Color(0XFFFEF3F7); //pale red
@@ -103,62 +105,67 @@ class _MainMenuState extends State<MainMenu> {
                 ],
               )
           ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: color3,
-                    borderRadius: BorderRadius.all(Radius.circular(100))
-                ),
-                height: 150,
-                width: 150,
-                child: Center(
-                  child: Text(
-                    "UP Next",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontFamily: 'Viking',
-                        fontSize: 29,
-                        color: color4),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 170.0),
+              child:
+                  Column(
+                    children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: color3,
+                        borderRadius: BorderRadius.all(Radius.circular(100))
+                    ),
+                    height: 150,
+                    width: 150,
+                    child: Center(
+                      child: Text(
+                        "UP Next",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontFamily: 'Viking',
+                            fontSize: 29,
+                            color: color4),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-            navButton(
-                buttonString: "To do today", function:
-                (TodaysTodos(
-                    userId: userId,
-                    maxLength: maxLength,
-                    token: token)
-                )
-            ),
-            navButton(buttonString: "Add new todo", function:
-                AddNewTodoPage(userId: userId, token: token)),
-            navButton(buttonString: "Settings", function:
-                SettingsPage(userId: userId, token: token)),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: SizedBox(
-                width: 200,
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.all(16.0),
-                    backgroundColor: Colors.orange,
-                    primary: Colors.black,
-                    textStyle: const TextStyle(fontSize: 15),
-                  ),
-                  onPressed: () {
-                    logOut();
-                  },
-                  child: Text("Log out"),
+                navButton(
+                    buttonString: "To do today", function:
+                    (TodaysTodos(
+                        userId: userId,
+                        maxLength: maxLength,
+                        token: token)
+                    )
                 ),
-              ),
+                navButton(buttonString: "Add new todo", function:
+                    AddNewTodoPage(userId: userId, token: token)),
+                navButton(buttonString: "Settings", function:
+                    SettingsPage(userId: userId, token: token)),
+                    ],
+                  ),
             ),
+            ),
+
+
+
+            Align(
+              alignment: Alignment.bottomRight,
+              child: TextButton( onPressed: () {
+                logOut();
+              }, child: Text("Log out")
+
+              )
+            ),
+
           ],
         ),
+
+
         ),
       ),
     );

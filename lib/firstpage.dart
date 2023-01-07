@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import 'mainmenupage.dart';
-import 'authorizationjson.dart';
-import 'settingsjson.dart';
-import 'remote_service.dart';
+import 'jsonComponents/authorizationjson.dart';
+import 'jsonComponents/settingsjson.dart';
+import 'jsonComponents/remote_service.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -598,3 +598,9 @@ class _FirstPageState extends State<FirstPage> {
     }
   }
 }
+
+
+
+
+
+

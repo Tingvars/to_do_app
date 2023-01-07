@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'mainmenupage.dart';
 import 'addnewtodopage.dart';
-import 'todojson.dart';
-import 'remote_service.dart';
+import 'jsonComponents/todojson.dart';
+import 'jsonComponents/remote_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'Components/navButton.dart';
+import 'Components/editingTodoItem.dart';
 
 class TodaysTodos extends StatefulWidget {
   const TodaysTodos(
@@ -26,6 +28,13 @@ class _TodaysTodosState extends State<TodaysTodos> {
   List<Todo> listedTodos = [];
   bool isLoadedToDo = false;
   String token = "";
+
+  Color color1 = Color(0XFF89143B); //dark red
+  Color color2 = Color(0XFFFEF3F7); //pale red
+  Color color3 = Color(0XFF6A266F); //Pale purple
+  Color color4 = Color(0XFFF8F5F8); //dark purple
+  Color color5 = Color(0XFFFFE7DF); //pale orange/brown
+  Color color6 = Color(0XFFB6360A); //dark orange/brown
 
   @override
   void initState() {
@@ -59,43 +68,87 @@ class _TodaysTodosState extends State<TodaysTodos> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
-      child: Column(
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment(0.5, -0.5),
+              colors: [
+                color1,
+                color2,
+              ],
+            )
+        ),
+        child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Column(children: [
-            for (Todo todo in listedTodos) todoItem(todo, todo.title, todo.importance),
+            for (Todo todo in listedTodos)
+              todoItem(todo, todo.title, todo.importance),
           ]),
-          navButton("Add new todo",
-              AddNewTodoPage(userId: widget.userId, token: token)),
-          navButton("Back to main menu", MainMenu(token: token)),
+          navButton(buttonString: "Add new todo",
+              function: AddNewTodoPage(userId: widget.userId, token: token)),
+          navButton(buttonString: "Back to main menu", function: MainMenu(token: token)),
         ],
       ),
-    ));
+        ),
+    ),
+    );
   }
 
   Padding todoItem(Todo todo, String titleString, int importance) {
     Color todoColor = Colors.green;
 
-    if (importance == 5) {
+    if (importance == 3) {
       todoColor = Colors.red;
-    } else if (importance == 4) {
-      todoColor = Colors.purple;
-    } else if (importance == 2) {
-      todoColor = Colors.blueAccent;
-    } else if (importance == 1) {
-      todoColor = Colors.blueGrey;
     }
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
+      child: Dismissible(
+      key: Key(todo.toDoId.toString()),
+      background: Container(
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Edit"),
+                  SizedBox( width: (MediaQuery.of(context).size.width)/2.5,
+                  ),
+                ]
+          ),
+          color: Colors.blue),
+      secondaryBackground: Container(
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox( width: (MediaQuery.of(context).size.width)/2.5,
+              ),
+          Text("Delete")
+            ]
+        ),
+          color: Colors.red),
       child: Container(
-        width: 200.0,
-        height: 110.0,
-        color: todoColor,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment(0.5, -0.5),
+              colors: [
+                todoColor,
+                color4,
+              ],
+            )
+        ),
+        height: 130.0,
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Padding(
             padding: const EdgeInsets.all(5.0),
-            child: Text(titleString),
+            child: Text(titleString, textAlign: TextAlign.center, style: TextStyle(
+
+                fontFamily: 'Viking',
+                fontSize: 20,
+                color: Colors.black),),
           ),
           Padding(
             padding: const EdgeInsets.all(5.0),
@@ -108,197 +161,47 @@ class _TodaysTodosState extends State<TodaysTodos> {
                 " " +
                 todo.dueBy.substring(0, 4)),
           ),
-          Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                deleteButton(Colors.red, "Delete", todo.toDoId),
-                editButton(Colors.blue, "Edit", todo),
-              ],
-            ),
-          ),
         ]),
       ),
-    );
-  }
 
-  TextButton editButton(Color bgcolor, String buttonString, Todo todo) {
-    String editedToDoTitle = todo.title;
-    int editedToDoImportance = todo.importance;
-    String importanceLabel = "";
-    DateTime selectedDate = DateTime.parse(todo.dueBy);
-    DateTime editedDate = DateTime.now();
-    TimeOfDay selectedTime = TimeOfDay.fromDateTime(DateTime.parse(todo.dueBy));
+        onDismissed: (direction) {
+          if (direction == DismissDirection.startToEnd) {
+            Navigator.of(context).pop(true);
+          } else {
+            Navigator.of(context).pop(true);
+          }
+        },
 
+        confirmDismiss: (direction) {
+        if (direction == DismissDirection.startToEnd) {
 
-
-    void selectDate() async {
-      final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(2015, 8),
-        lastDate: DateTime(2101),
-      );
-      if (picked != null && picked != selectedDate)
-        setState(() {
-          selectedDate = picked;
-        });
-    }
-
-    editImportanceLabel() {
-      if (editedToDoImportance == 1) {
-        importanceLabel = "Very low";
-      } else if (editedToDoImportance == 2) {
-        importanceLabel = "Low";
-      } else if (editedToDoImportance == 3) {
-        importanceLabel = "Medium";
-      } else if (editedToDoImportance == 4) {
-        importanceLabel = "High";
-      } else if (editedToDoImportance == 5) {
-        importanceLabel = "Very High";
-      }
-    }
-
-    editImportanceLabel();
-
-    void selectTime() async {
-      final TimeOfDay? picked = await showTimePicker(
-        context: context,
-        initialTime: selectedTime,
-      );
-      if (picked != null && picked != selectedTime)
-        setState(() {
-          selectedTime = picked;
-        });
-    }
-
-    return TextButton(
-      style: TextButton.styleFrom(
-        padding: const EdgeInsets.all(16.0),
-        backgroundColor: bgcolor,
-        primary: Colors.black,
-        textStyle: const TextStyle(fontSize: 15),
-      ),
-      onPressed: () async {
-        return showDialog<void>(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('AlertDialog Title'),
-              content: SingleChildScrollView(
-                child: Container(
-                  width: 300.0,
-                  color: Colors.deepPurpleAccent,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Column(
-                        children: [
-                          Text("Name of todo item:"),
-                          SizedBox(
-                              height: 35,
-                              width: 200,
-                              child: TextFormField(
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                  ),
-                                  onChanged: (text) {
-                                    editedToDoTitle = text;
-                                  },
-                                  initialValue: todo.title))
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          TextButton(
-                              onPressed: () {
-                                selectDate();
-                              },
-                              child: Text("Select date")),
-                          TextButton(
-                              onPressed: () {
-                                selectTime();
-                              },
-                              child: Text("Select time")),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          Text("Importance:"),
-                          SizedBox(
-                              height: 35,
-                              width: 200,
-                              child: Slider(
-                                value: editedToDoImportance.toDouble(),
-                                min: 1,
-                                max: 5,
-                                divisions: 4,
-                                label: importanceLabel,
-                                onChanged: (double value) {
-                                    editedToDoImportance = value.toInt();
-                                    editImportanceLabel();
-                                },
-                              )
-                          )
-                        ],
-                      ),
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.all(16.0),
-                          backgroundColor: Colors.blue,
-                          foregroundColor: Colors.red,
-                          textStyle: const TextStyle(fontSize: 15),
-                        ),
-                        onPressed: () async {
-                          editedDate = DateTime(
-                              selectedDate.year,
-                              selectedDate.month,
-                              selectedDate.day,
-                              selectedTime.hour,
-                              selectedTime.minute,
-                              selectedDate.second,
-                              selectedDate.millisecond,
-                              selectedDate.microsecond);
-
-                          Todo? newTodo = Todo(
-                              toDoId: todo.toDoId,
-                              title: editedToDoTitle,
-                              importance: editedToDoImportance,
-                              dueBy: editedDate.toIso8601String(),
-                              userId: widget.userId);
-                          var response = await RemoteService()
-                              .editTodo(todo.toDoId, newTodo, token)
-                              .catchError((err) {});
-                          if (response == null) return;
-
-                          navigateToPage(TodaysTodos(
-                              userId: widget.userId,
-                              maxLength: widget.maxLength,
-                              token: token));
-
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text('Update'),
-                      ),
-                    ],
+          return showDialog(
+            context: context,
+            builder: (context) {
+              return editingTodoItem(todo: todo, titleString: titleString, importance: importance, token: token, maxLength: widget.maxLength);
+            },
+          );
+        } else {
+          return showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text('Remove item?'),
+                content: Text(
+                    'Do you want to remove this item from your to-do list?'),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('Cancel'),
+                    onPressed: () => Navigator.of(context).pop(false),
                   ),
-                ),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('Back to todos'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      },
-      child: Text(buttonString),
+                  deleteButton(Colors.red, "Yes, delete!", todo.toDoId)
+                ],
+              );
+            },
+          );
+        }
+        },
+    ),
     );
   }
 
@@ -326,27 +229,6 @@ class _TodaysTodosState extends State<TodaysTodos> {
             userId: widget.userId, maxLength: widget.maxLength, token: token));
       },
       child: Text(buttonString),
-    );
-  }
-
-  Padding navButton(String buttonString, Widget widget) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20.0),
-      child: SizedBox(
-        width: 200,
-        child: TextButton(
-          style: TextButton.styleFrom(
-            padding: const EdgeInsets.all(16.0),
-            backgroundColor: Colors.orange,
-            primary: Colors.black,
-            textStyle: const TextStyle(fontSize: 15),
-          ),
-          onPressed: () {
-            navigateToPage(widget);
-          },
-          child: Text(buttonString),
-        ),
-      ),
     );
   }
 }
