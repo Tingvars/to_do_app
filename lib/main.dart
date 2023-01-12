@@ -11,7 +11,7 @@ void main() async {
       MaterialApp(
         title: 'UpNext',
         theme: new ThemeData(scaffoldBackgroundColor: const Color(0xFFFCF788)),
-        home: MainMenu(token: token),
+        home: MainMenu(token: token, language: "en"),
       ),
     );
   } catch (error) {

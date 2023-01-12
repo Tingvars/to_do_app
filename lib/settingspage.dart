@@ -9,11 +9,12 @@ import 'Components/counterButton.dart';
 import 'firstpage.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({Key? key, required this.userId, required this.token})
+  const SettingsPage({Key? key, required this.userId, required this.token, required this.language})
       : super(key: key);
 
   final String userId;
   final String token;
+  final String language;
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -26,6 +27,7 @@ class _SettingsPageState extends State<SettingsPage> {
   bool initialPageLoad = true;
   int enteredNumTodos = 1;
   String token = "";
+  String language = "";
 
   Color color1 = Color(0XFF89143B); //dark red
   Color color2 = Color(0XFFFEF3F7); //pale red
@@ -38,6 +40,7 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
     getData();
+    print(widget.language);
   }
 
   getData() async {
@@ -51,10 +54,9 @@ class _SettingsPageState extends State<SettingsPage> {
       listedSettings = settings!
           .where((element) => element.userId == widget.userId)
           .toList();
+      language = widget.language;
     } else {}
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -138,6 +140,71 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
             ),
+              //change language section:
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: Container(
+                width: 350.0,
+                height: 150.0,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment(0.5, -0.5),
+                    colors: [
+                      color3,
+                      color4,
+                    ],
+                  ),
+                  border: Border.all(color: color3),
+                  borderRadius: BorderRadius.all(Radius.circular(90)),
+                ),
+                //color: Colors.cyan,
+                child:
+
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Select language:"),
+                      SizedBox(width: 20,),
+                      SizedBox(
+                        height: 75, child:
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Row(
+                              children: [
+                                Text("IS"),
+                          Radio(
+                          value: "is",
+                          groupValue: language,
+                          onChanged: (value){
+                            setState(() {
+                              language = value.toString();
+                            });
+                          }
+                      ),]
+                            ),
+                            Row(
+                                children: [
+                                  Text("EN"),
+                                  Radio(
+                                      value: "en",
+                                      groupValue: language,
+                                      onChanged: (value){
+                                        setState(() {
+                                          language = value.toString();
+                                        });
+                                      }
+                                  ),]
+                            ),
+                      ]
+              ),
+                    ),
+                    ]
+                ),
+
+              ),
+            ),
             //Update button:
             TextButton(
               child: Container(
@@ -167,7 +234,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 Settings? updatedSettings = Settings(
                     settingsId: listedSettings?[0].settingsId,
                     numToDos: enteredNumTodos,
-                    userId: widget.userId);
+                    userId: widget.userId,
+                language: language);
                 var response = await RemoteService()
                     .editSettings(
                         listedSettings?[0].settingsId, updatedSettings, token)
@@ -178,7 +246,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       builder: (context) => TodaysTodos(
                           userId: widget.userId,
                           maxLength: enteredNumTodos,
-                          token: token),
+                          token: token,
+                      language: language),
                     ));
               },
             ),
@@ -190,7 +259,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ],
             ),
 
-            navButton(buttonString: "Back to main menu", function: MainMenu(token: token)),
+            navButton(buttonString: "Back to main menu", function: MainMenu(token: token, language: language)),
           ],
         ),
         ),

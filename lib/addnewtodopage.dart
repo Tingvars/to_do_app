@@ -7,11 +7,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'Components/navButton.dart';
 
 class AddNewTodoPage extends StatefulWidget {
-  const AddNewTodoPage({Key? key, required this.userId, required this.token})
+  const AddNewTodoPage({Key? key, required this.userId, required this.token, required this.language})
       : super(key: key);
 
   final String userId;
   final String token;
+  final String language;
 
   @override
   State<AddNewTodoPage> createState() => _AddNewTodoPageState();
@@ -320,7 +321,8 @@ class _AddNewTodoPageState extends State<AddNewTodoPage> {
                                       MaterialPageRoute(
                                         builder: (context) => AddNewTodoPage(
                                             userId: widget.userId,
-                                            token: token),
+                                            token: token,
+                                        language: widget.language),
                                       ));
                                 },
                                 //child: const Text('Create'),
@@ -333,7 +335,7 @@ class _AddNewTodoPageState extends State<AddNewTodoPage> {
               ),
               navButton(
                   buttonString: "Back to main menu",
-                  function: MainMenu(token: token)),
+                  function: MainMenu(token: token, language: widget.language)),
             ],
           ),
         ),

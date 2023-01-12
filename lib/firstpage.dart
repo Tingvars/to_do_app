@@ -291,7 +291,7 @@ class _FirstPageState extends State<FirstPage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => MainMenu(token: token),
+                              builder: (context) => MainMenu(token: token, language: "en"),
                             ));
                       }
                       ;
@@ -529,6 +529,7 @@ class _FirstPageState extends State<FirstPage> {
                         Settings newSettings = Settings(
                           userId: userId,
                           numToDos: 5,
+                          language: "en"
                         );
                         var response1 = await RemoteService()
                             .createSettings(newSettings)

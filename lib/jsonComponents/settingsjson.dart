@@ -11,21 +11,25 @@ class Settings {
     this.settingsId,
     required this.numToDos,
     required this.userId,
+    required this.language,
   });
 
   dynamic settingsId;
   dynamic numToDos;
   String userId;
+  String language;
 
   factory Settings.fromJson(Map<String, dynamic> json) => Settings(
         settingsId: json["settingsId"],
         numToDos: json["numToDos"],
         userId: json["userId"],
+      language: json["language"],
       );
 
   Map<String, dynamic> toJson() => {
         "settingsId": settingsId,
         "numToDos": numToDos,
         "userId": userId,
+    "language": language,
       };
 }

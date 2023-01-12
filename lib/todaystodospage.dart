@@ -12,12 +12,14 @@ class TodaysTodos extends StatefulWidget {
       {Key? key,
       required this.userId,
       required this.maxLength,
-      required this.token})
+      required this.token,
+      required this.language})
       : super(key: key);
 
   final String userId;
   final int maxLength;
   final String token;
+  final String language;
 
   @override
   State<TodaysTodos> createState() => _TodaysTodosState();
@@ -88,8 +90,8 @@ class _TodaysTodosState extends State<TodaysTodos> {
               todoItem(todo, todo.title, todo.importance),
           ]),
           navButton(buttonString: "Add new todo",
-              function: AddNewTodoPage(userId: widget.userId, token: token)),
-          navButton(buttonString: "Back to main menu", function: MainMenu(token: token)),
+              function: AddNewTodoPage(userId: widget.userId, token: token, language: widget.language)),
+          navButton(buttonString: "Back to main menu", function: MainMenu(token: token, language: widget.language)),
         ],
       ),
         ),
@@ -145,7 +147,6 @@ class _TodaysTodosState extends State<TodaysTodos> {
           Padding(
             padding: const EdgeInsets.all(5.0),
             child: Text(titleString, textAlign: TextAlign.center, style: TextStyle(
-
                 fontFamily: 'Viking',
                 fontSize: 20,
                 color: Colors.black),),
@@ -178,7 +179,7 @@ class _TodaysTodosState extends State<TodaysTodos> {
           return showDialog(
             context: context,
             builder: (context) {
-              return editingTodoItem(todo: todo, titleString: titleString, importance: importance, token: token, maxLength: widget.maxLength);
+              return editingTodoItem(todo: todo, titleString: titleString, importance: importance, token: token, maxLength: widget.maxLength, language: widget.language);
             },
           );
         } else {
@@ -226,7 +227,7 @@ class _TodaysTodosState extends State<TodaysTodos> {
         if (response == null) return;
 
         navigateToPage(TodaysTodos(
-            userId: widget.userId, maxLength: widget.maxLength, token: token));
+            userId: widget.userId, maxLength: widget.maxLength, token: token, language: widget.language));
       },
       child: Text(buttonString),
     );

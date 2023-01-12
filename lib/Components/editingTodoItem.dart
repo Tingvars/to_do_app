@@ -4,13 +4,14 @@ import 'package:to_do_app/todaystodospage.dart';
 import '../jsonComponents/remote_service.dart';
 
 class editingTodoItem extends StatefulWidget {
-  const editingTodoItem({Key? key, required this.todo, required this.titleString, required this.importance, required this.token, required this.maxLength}) : super(key: key);
+  const editingTodoItem({Key? key, required this.todo, required this.titleString, required this.importance, required this.token, required this.maxLength, required this.language}) : super(key: key);
 
   final Todo todo;
   final String titleString;
   final int importance;
   final String token;
   final int maxLength;
+  final String language;
 
   @override
   State<editingTodoItem> createState() => _editingTodoItemState();
@@ -284,14 +285,15 @@ class _editingTodoItemState extends State<editingTodoItem> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => TodaysTodos(userId: widget.todo.userId, maxLength: widget.maxLength, token: widget.token),
+                                      builder: (context) => TodaysTodos(userId: widget.todo.userId, maxLength: widget.maxLength, token: widget.token, language: widget.language),
                                     )
                                 );
 
                               navigateToPage(TodaysTodos(
                                   userId: widget.todo.userId,
                                   maxLength: widget.maxLength,
-                                  token: widget.token)
+                                  token: widget.token,
+                              language: widget.language)
                               );
                               Navigator.of(context).pop();
                             },
