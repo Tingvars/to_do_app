@@ -1,6 +1,6 @@
 # to_do_app
 
-A new Flutter project.
+Front end for UP Next, NTV 3rd term final project. This repository is the frontend code - the API code can be found [here](https://github.com/Tingvars/tdAPI)
 
 ## Getting Started
 
