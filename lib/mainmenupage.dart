@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-import 'todaystodospage.dart';
+import 'showtodospage.dart';
 import 'addnewtodopage.dart';
 import 'settingspage.dart';
-import 'jsonComponents/remote_service.dart';
+import 'jsonComponents/remoteservice.dart';
 import 'jsonComponents/settingsjson.dart';
-import 'firstpage.dart';
+import 'loginpage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'Components/navButton.dart';
 
 class MainMenu extends StatefulWidget {
-  const MainMenu({Key? key, required this.token, required this.language}) : super(key: key);
+  const MainMenu({Key? key, required this.token}) : super(key: key);
 
-  //final String userId;
   final String token;
-  final String language;
 
   @override
   State<MainMenu> createState() => _MainMenuState();
@@ -28,7 +26,7 @@ class _MainMenuState extends State<MainMenu> {
   String token = "";
   String userId = "";
   String language = "";
-  String toDoTodayButtonString = "";
+  String toToDosButtonString = "";
   String addNewToDoButtonString = "";
   String settingsButtonString = "";
   String logOutButtonString = "";
@@ -49,7 +47,7 @@ class _MainMenuState extends State<MainMenu> {
   getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString("jwtString")!;
-
+//Getting userId from jwt token in localstorage:
     List<String> parts = token.split('.');
     String payload = parts[1];
     switch (payload.length % 4) {
@@ -66,7 +64,7 @@ class _MainMenuState extends State<MainMenu> {
     }
     String jsonId = utf8.decode(base64Url.decode(payload));
     Map<String, dynamic> claims = jsonDecode(jsonId);
-    //The following, userId, is the all-important userid. Need to pass it to all screens.
+
     userId = claims['Id'];
 
     settings = await RemoteService().getSettings(token);
@@ -87,26 +85,25 @@ class _MainMenuState extends State<MainMenu> {
     prefs.remove("jwtString");
 
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => FirstPage()));
+        context, MaterialPageRoute(builder: (context) => LoginPage()));
   }
 
   navigateToPage(Widget widget) {
     Navigator.push(context, MaterialPageRoute(builder: (context) => widget));
   }
 
-  setLanguage()
-  {
+  setLanguage() {
     if (language == "is") {
-  toDoTodayButtonString = "Í dag";
-  addNewToDoButtonString = "Bæta við";
-  settingsButtonString = "Stillingar";
-  logOutButtonString = "Útskráning";
-  } else {
-  toDoTodayButtonString = "To do today";
-  addNewToDoButtonString = "Add new todo";
-  settingsButtonString = "Settings";
-  logOutButtonString = "Log out";
-  }
+      toToDosButtonString = "Gátlisti";
+      addNewToDoButtonString = "Bæta við";
+      settingsButtonString = "Stillingar";
+      logOutButtonString = "Útskráning";
+    } else {
+      toToDosButtonString = "To do list";
+      addNewToDoButtonString = "Add new todo";
+      settingsButtonString = "Settings";
+      logOutButtonString = "Log out";
+    }
   }
 
   @override
@@ -116,14 +113,15 @@ class _MainMenuState extends State<MainMenu> {
         child: Container(
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
-              gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment(0.5, -0.5),
-            colors: [
-              color1,
-              color2,
-            ],
-          )),
+            gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment(0.5, -0.5),
+              colors: [
+                color1,
+                color2,
+              ],
+            ),
+          ),
           child: Stack(
             children: [
               Center(
@@ -153,19 +151,18 @@ class _MainMenuState extends State<MainMenu> {
                         ),
                       ),
                       navButton(
-                          buttonString: toDoTodayButtonString,
-                          function: (TodaysTodos(
+                          buttonString: toToDosButtonString,
+                          function: (ShowTodos(
                               userId: userId,
                               maxLength: maxLength,
-                              token: token,
-                          language: widget.language,))),
+                              token: token))),
                       navButton(
                           buttonString: addNewToDoButtonString,
                           function:
-                              AddNewTodoPage(userId: userId, token: token, language: widget.language,)),
+                              AddNewTodoPage(userId: userId, token: token)),
                       navButton(
                           buttonString: settingsButtonString,
-                          function: SettingsPage(userId: userId, token: token, language: widget.language)),
+                          function: SettingsPage(userId: userId, token: token)),
                     ],
                   ),
                 ),

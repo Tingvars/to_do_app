@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'todojson.dart';
 import 'settingsjson.dart';
-import 'authorizationjson.dart';
 
 class RemoteService {
   String decodedToken = "";
@@ -18,6 +17,8 @@ class RemoteService {
     if (response.statusCode == 200) {
       var json = response.body;
       return todoFromJson(json);
+    } {
+      throw Future.error("Unable to retrieve todos");
     }
   }
 
@@ -34,7 +35,9 @@ class RemoteService {
 
     if (response.statusCode == 201) {
       return response.body;
-    } else {}
+    } {
+      throw Future.error("Unable to create todo");
+    }
   }
 
   Future<dynamic> editTodo(int id, dynamic object, String token) async {
@@ -49,7 +52,9 @@ class RemoteService {
     var response = await client.put(url, body: _payload, headers: _headers);
     if (response.statusCode == 200) {
       return response.body;
-    } else {}
+    } {
+      throw Future.error("Unable to edit todo");
+    }
   }
 
   Future<dynamic> deleteTodo(int? id, dynamic object, String token) async {
@@ -64,7 +69,9 @@ class RemoteService {
     var response = await client.delete(url, body: _payload, headers: _headers);
     if (response.statusCode == 200) {
       return response.body;
-    } else {}
+    } {
+      throw Future.error("Unable to delete todo");
+    }
   }
 
   Future<List<Settings>?> getSettings(String token) async {
@@ -78,6 +85,8 @@ class RemoteService {
     if (response.statusCode == 200) {
       var json = response.body;
       return settingsFromJson(json);
+    } else {
+      throw Future.error("Unable to get settings");
     }
   }
 
@@ -92,7 +101,9 @@ class RemoteService {
 
     if (response.statusCode == 201) {
       return response.body;
-    } else {}
+    } else {
+      throw Future.error("Unable to initialize settings");
+    }
   }
 
   Future<dynamic> editSettings(int id, dynamic object, String token) async {
@@ -107,11 +118,9 @@ class RemoteService {
     var response = await client.put(url, body: _payload, headers: _headers);
     if (response.statusCode == 200) {
       return response.body;
-    } else {}
-  }
-
-  String getToken() {
-    return decodedToken;
+    } else {
+      throw Future.error("Unable to update settings");
+    }
   }
 
   Future<dynamic> registerUser(dynamic object) async {

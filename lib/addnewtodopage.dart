@@ -1,31 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'mainmenupage.dart';
 import 'jsonComponents/todojson.dart';
-import 'jsonComponents/remote_service.dart';
+import 'jsonComponents/remoteservice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Components/navButton.dart';
+import 'jsonComponents/settingsjson.dart';
 
 class AddNewTodoPage extends StatefulWidget {
-  const AddNewTodoPage({Key? key, required this.userId, required this.token, required this.language})
+  const AddNewTodoPage({Key? key, required this.userId, required this.token})
       : super(key: key);
 
   final String userId;
   final String token;
-  final String language;
 
   @override
   State<AddNewTodoPage> createState() => _AddNewTodoPageState();
 }
 
 class _AddNewTodoPageState extends State<AddNewTodoPage> {
+  List<Settings>? settings;
+  List<Settings> listedSettings = [];
   String enteredTodoTitle = "";
   int enteredTodoImportance = 2;
-  String importanceLabel = "Medium";
+  bool isLoaded = false;
+  String importanceLabel = "";
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
   DateTime dueDateTime = DateTime.now();
   String token = "";
+  String language = "";
 
   Color color1 = Color(0XFF89143B); //dark red
   Color color2 = Color(0XFFFEF3F7); //pale red
@@ -33,6 +36,17 @@ class _AddNewTodoPageState extends State<AddNewTodoPage> {
   Color color4 = Color(0XFFF8F5F8); //dark purple
   Color color5 = Color(0XFFFFE7DF); //pale orange/brown
   Color color6 = Color(0XFFB6360A); //dark orange/brown
+
+  String lowImpString = "";
+  String medImpString = "";
+  String highImpString = "";
+  String addTodoPageTitleString = "";
+  String nameOfTodoString = "";
+  String selectDateString = "";
+  String selectTimeString = "";
+  String importanceString = "";
+  String createButtonString = "";
+  String backToMainButtonString = "";
 
   @override
   void initState() {
@@ -43,9 +57,20 @@ class _AddNewTodoPageState extends State<AddNewTodoPage> {
   getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString("jwtString")!;
+    settings = await RemoteService().getSettings(token);
+    if (settings != null) {
+      setState(() {
+        isLoaded = true;
+      });
+      listedSettings = settings!
+          .where((element) => element.userId == widget.userId)
+          .toList();
+      language = listedSettings[0].language;
+      setLanguage();
+    } else {}
   }
 
-  void _selectTime() async {
+  void selectTime() async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: selectedTime,
@@ -60,7 +85,7 @@ class _AddNewTodoPageState extends State<AddNewTodoPage> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => widget));
   }
 
-  void _selectDate() async {
+  void selectDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDate,
@@ -87,11 +112,37 @@ class _AddNewTodoPageState extends State<AddNewTodoPage> {
 
   editImportanceLabel() {
     if (enteredTodoImportance == 1) {
-      importanceLabel = "Low";
+      importanceLabel = lowImpString;
     } else if (enteredTodoImportance == 2) {
-      importanceLabel = "Medium";
+      importanceLabel = medImpString;
     } else if (enteredTodoImportance == 3) {
-      importanceLabel = "High";
+      importanceLabel = highImpString;
+    }
+  }
+
+  setLanguage() {
+    if (language == "is") {
+      lowImpString = "Lágt";
+      medImpString = "Miðlungs";
+      highImpString = "Hátt";
+      addTodoPageTitleString = "Bæta við atriði";
+      nameOfTodoString = "Lýsing:";
+      selectDateString = "Velja dag";
+      selectTimeString = "Velja tíma";
+      importanceString = "Mikilvægi:";
+      createButtonString = "Búa til";
+      backToMainButtonString = "Aftur í aðalvalmynd";
+    } else {
+      lowImpString = "Low";
+      medImpString = "Medium";
+      highImpString = "High";
+      addTodoPageTitleString = "Add new todo";
+      nameOfTodoString = "Description:";
+      selectDateString = "Choose date";
+      selectTimeString = "Choose time";
+      importanceString = "Importance:";
+      createButtonString = "Create";
+      backToMainButtonString = "Back to main menu";
     }
   }
 
@@ -116,7 +167,7 @@ class _AddNewTodoPageState extends State<AddNewTodoPage> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
                 child: Text(
-                  "Page to add new todo",
+                  addTodoPageTitleString,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontFamily: 'Viking',
@@ -153,7 +204,7 @@ class _AddNewTodoPageState extends State<AddNewTodoPage> {
                                 padding: const EdgeInsets.only(bottom: 30.0),
                                 child: Column(
                                   children: [
-                                    Text("Name of todo item:"),
+                                    Text(nameOfTodoString),
                                     SizedBox(height: 15),
                                     SizedBox(
                                       height: 35,
@@ -197,18 +248,21 @@ class _AddNewTodoPageState extends State<AddNewTodoPage> {
                                                 Radius.circular(90))),
                                         padding: const EdgeInsets.all(16.0),
                                         child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
-                                          Text("Select date",
-                                            style: TextStyle(
-                                              fontFamily: 'Viking',
-                                              fontSize: 15,
-                                              color: Colors.black,
-                                            ),),
-                                        ]),
+                                              Text(
+                                                selectDateString,
+                                                style: TextStyle(
+                                                  fontFamily: 'Viking',
+                                                  fontSize: 15,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ]),
                                       ),
                                       onPressed: () {
-                                        _selectDate();
+                                        selectDate();
                                       },
                                     ),
                                     TextButton(
@@ -228,20 +282,23 @@ class _AddNewTodoPageState extends State<AddNewTodoPage> {
                                                 Radius.circular(90))),
                                         padding: const EdgeInsets.all(16.0),
                                         child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
-                                              Text("Select time",
+                                              Text(
+                                                selectTimeString,
                                                 style: TextStyle(
                                                   fontFamily: 'Viking',
                                                   fontSize: 15,
                                                   color: Colors.black,
-                                                ),),
+                                                ),
+                                              ),
                                             ]),
                                       ),
-                                        onPressed: () {
-                                          _selectTime();
-                                        },
-                                        //child: Text("Select time"),
+                                      onPressed: () {
+                                        selectTime();
+                                      },
+                                      //child: Text("Select time"),
                                     ),
                                   ],
                                 ),
@@ -250,7 +307,7 @@ class _AddNewTodoPageState extends State<AddNewTodoPage> {
                                 padding: const EdgeInsets.only(bottom: 30.0),
                                 child: Column(
                                   children: [
-                                    Text("Importance:"),
+                                    Text(importanceString),
                                     SizedBox(
                                         height: 35,
                                         width: 200,
@@ -285,16 +342,18 @@ class _AddNewTodoPageState extends State<AddNewTodoPage> {
                                           color2,
                                         ],
                                       ),
-                                      borderRadius: BorderRadius.all(Radius.circular(90))
-                                  ),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(90))),
                                   padding: const EdgeInsets.all(16.0),
-                                  child: Text("Create",
+                                  child: Text(
+                                    createButtonString,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontFamily: 'Viking',
                                       fontSize: 15,
                                       color: Colors.black,
-                                    ),),
+                                    ),
+                                  ),
                                 ),
                                 onPressed: () async {
                                   dueDateTime = DateTime(
@@ -321,11 +380,9 @@ class _AddNewTodoPageState extends State<AddNewTodoPage> {
                                       MaterialPageRoute(
                                         builder: (context) => AddNewTodoPage(
                                             userId: widget.userId,
-                                            token: token,
-                                        language: widget.language),
+                                            token: token),
                                       ));
                                 },
-                                //child: const Text('Create'),
                               ),
                             ],
                           ),
@@ -334,8 +391,8 @@ class _AddNewTodoPageState extends State<AddNewTodoPage> {
                 ),
               ),
               navButton(
-                  buttonString: "Back to main menu",
-                  function: MainMenu(token: token, language: widget.language)),
+                  buttonString: backToMainButtonString,
+                  function: MainMenu(token: token)),
             ],
           ),
         ),

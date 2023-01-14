@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'firstpage.dart';
+import 'loginpage.dart';
 import 'mainmenupage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,7 +11,7 @@ void main() async {
       MaterialApp(
         title: 'UpNext',
         theme: new ThemeData(scaffoldBackgroundColor: const Color(0xFFFCF788)),
-        home: MainMenu(token: token, language: "en"),
+        home: MainMenu(token: token),
       ),
     );
   } catch (error) {
@@ -19,7 +19,7 @@ void main() async {
       MaterialApp(
         title: 'UpNext',
         theme: new ThemeData(scaffoldBackgroundColor: const Color(0XFF6A266F)),
-        home: FirstPage(),
+        home: LoginPage(),
       ),
     );
   }

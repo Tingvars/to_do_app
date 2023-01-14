@@ -2,18 +2,18 @@ import "package:flutter/material.dart";
 import 'mainmenupage.dart';
 import 'jsonComponents/authorizationjson.dart';
 import 'jsonComponents/settingsjson.dart';
-import 'jsonComponents/remote_service.dart';
+import 'jsonComponents/remoteservice.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class FirstPage extends StatefulWidget {
-  const FirstPage({Key? key}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
-  State<FirstPage> createState() => _FirstPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _FirstPageState extends State<FirstPage> {
+class _LoginPageState extends State<LoginPage> {
   String enteredUsername = "";
   String enteredPassword = "";
   String enteredEmail = "";
@@ -31,19 +31,17 @@ class _FirstPageState extends State<FirstPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-      child: Container(
+        body: Center(
+            child: Container(
       decoration: BoxDecoration(
-      gradient: LinearGradient(
-      begin: Alignment.topRight,
-      end: Alignment(0.5, -0.5),
-      colors: [
-        color1,
-        color2,
-      ],
-    )
-    ),
-
+          gradient: LinearGradient(
+        begin: Alignment.topRight,
+        end: Alignment(0.5, -0.5),
+        colors: [
+          color1,
+          color2,
+        ],
+      )),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -52,31 +50,27 @@ class _FirstPageState extends State<FirstPage> {
               padding: const EdgeInsets.only(bottom: 20.0),
               child: Container(
                 decoration: BoxDecoration(
-                  color: color3,
-                    borderRadius: BorderRadius.all(Radius.circular(100))
-                ),
+                    color: color3,
+                    borderRadius: BorderRadius.all(Radius.circular(100))),
                 height: 150,
                 width: 150,
                 child: Center(
                   child: Text(
-                  "UP Next",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontFamily: 'Viking',
-                      fontSize: 29,
-                      color: color4),
-                ),
+                    "UP Next",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontFamily: 'Viking', fontSize: 29, color: color4),
+                  ),
                 ),
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextButton(
                 child: Container(
                   width: 200,
                   decoration: BoxDecoration(
-                    border: Border.all(color: color3),
+                      border: Border.all(color: color3),
                       gradient: LinearGradient(
                         begin: Alignment.topRight,
                         end: Alignment(-0.1, -0.1),
@@ -85,17 +79,17 @@ class _FirstPageState extends State<FirstPage> {
                           color4,
                         ],
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(90))
-                  ),
+                      borderRadius: BorderRadius.all(Radius.circular(90))),
                   padding: const EdgeInsets.all(16.0),
-                  child: const Text('Register',
+                  child: const Text(
+                    'Register',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        fontFamily: 'Viking',
-                        fontSize: 15,
+                      fontFamily: 'Viking',
+                      fontSize: 15,
                       color: Colors.black,
+                    ),
                   ),
-                ),
                 ),
                 onPressed: () async {
                   isRegisterError = false;
@@ -116,10 +110,10 @@ class _FirstPageState extends State<FirstPage> {
                         color4,
                       ],
                     ),
-                    borderRadius: BorderRadius.all(Radius.circular(90))
-                ),
+                    borderRadius: BorderRadius.all(Radius.circular(90))),
                 padding: const EdgeInsets.all(16.0),
-                child: const Text('Login',
+                child: const Text(
+                  'Login',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'Viking',
@@ -133,12 +127,10 @@ class _FirstPageState extends State<FirstPage> {
                 return await loginShowDialog(context);
               },
             ),
-              ],
+          ],
         ),
       ),
-    )
-      )
-    );
+    )));
   }
 
   loginShowDialog(BuildContext context) async {
@@ -146,39 +138,38 @@ class _FirstPageState extends State<FirstPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-            contentPadding: EdgeInsets.all(0),
+          contentPadding: EdgeInsets.all(0),
           content: SingleChildScrollView(
             child: Container(
               width: 350,
               height: 400,
               decoration: BoxDecoration(
-                  border: Border.all(color: color3),
-                  gradient: LinearGradient(
-                    begin: Alignment.topRight,
-                    end: Alignment(-0.1, -0.1),
-                    colors: [
-                      color1,
-                      color2,
-                    ],
-                  ),
+                border: Border.all(color: color3),
+                gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment(-0.1, -0.1),
+                  colors: [
+                    color1,
+                    color2,
+                  ],
+                ),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Column(
-                    children:[
-                      Container(
-                        child: Text('Login',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Viking',
-                            fontSize: 30,
-                            color: Colors.black,
-                          ),
+                  Column(children: [
+                    Container(
+                      child: Text(
+                        'Login',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'Viking',
+                          fontSize: 30,
+                          color: Colors.black,
                         ),
-                      )
-                    ]
-                  ),
+                      ),
+                    )
+                  ]),
                   Column(
                     children: [
                       SizedBox(
@@ -258,17 +249,17 @@ class _FirstPageState extends State<FirstPage> {
                               color4,
                             ],
                           ),
-                          borderRadius: BorderRadius.all(Radius.circular(90))
-                      ),
+                          borderRadius: BorderRadius.all(Radius.circular(90))),
                       padding: const EdgeInsets.all(16.0),
-                    child: const Text('Log in',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'Viking',
-                        fontSize: 15,
-                        color: Colors.black,
+                      child: const Text(
+                        'Log in',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'Viking',
+                          fontSize: 15,
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
                     ),
                     onPressed: () async {
                       User newUser = User(
@@ -276,8 +267,9 @@ class _FirstPageState extends State<FirstPage> {
                           email: enteredEmail,
                           password: enteredPassword);
                       //"response" below is the jwt token as a string:
-                      var response =
-                      await RemoteService().loginUser(newUser).catchError((err) {
+                      var response = await RemoteService()
+                          .loginUser(newUser)
+                          .catchError((err) {
                         isLoginError = true;
                         Navigator.of(context).pop();
                         loginShowDialog(context);
@@ -285,24 +277,22 @@ class _FirstPageState extends State<FirstPage> {
                       });
                       if (response != null) {
                         SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
+                            await SharedPreferences.getInstance();
                         prefs.setString("jwtString", response);
                         final token = prefs.getString("jwtString")!;
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => MainMenu(token: token, language: "en"),
+                              builder: (context) => MainMenu(token: token),
                             ));
                       }
                       ;
                     },
-
                   ),
                 ],
               ),
             ),
           ),
-
         );
       },
     );
@@ -332,20 +322,19 @@ class _FirstPageState extends State<FirstPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Column(
-                      children:[
-                        Container(
-                          child: Text('Register',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'Viking',
-                              fontSize: 30,
-                              color: Colors.black,
-                            ),
-                          ),
-                        )
-                      ]
-                  ),
+                  Column(children: [
+                    Container(
+                      child: Text(
+                        'Register',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'Viking',
+                          fontSize: 30,
+                          color: Colors.black,
+                        ),
+                      ),
+                    )
+                  ]),
                   Column(
                     children: [
                       SizedBox(
@@ -478,10 +467,10 @@ class _FirstPageState extends State<FirstPage> {
                               color4,
                             ],
                           ),
-                          borderRadius: BorderRadius.all(Radius.circular(90))
-                      ),
+                          borderRadius: BorderRadius.all(Radius.circular(90))),
                       padding: const EdgeInsets.all(16.0),
-                      child: const Text('Register',
+                      child: const Text(
+                        'Register',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: 'Viking',
@@ -507,6 +496,7 @@ class _FirstPageState extends State<FirstPage> {
                       });
 
                       if (response != null) {
+                        //Splitting the userId from the jwt token:
                         List<String> parts = response.split('.');
                         String payload = parts[1];
                         switch (payload.length % 4) {
@@ -523,14 +513,10 @@ class _FirstPageState extends State<FirstPage> {
                         }
                         String jsonId = utf8.decode(base64Url.decode(payload));
                         Map<String, dynamic> claims = jsonDecode(jsonId);
-                        //The following, userId, is the all-important userid. Need to pass it to all screens.
                         String userId = claims['Id'];
-
+                        //Creating settings for the new user:
                         Settings newSettings = Settings(
-                          userId: userId,
-                          numToDos: 5,
-                          language: "en"
-                        );
+                            userId: userId, numToDos: 5, language: "en");
                         var response1 = await RemoteService()
                             .createSettings(newSettings)
                             .catchError((err) {
@@ -540,10 +526,12 @@ class _FirstPageState extends State<FirstPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => FirstPage(),
+                                builder: (context) => LoginPage(),
                               ));
-                        };
-                      };
+                        }
+                        ;
+                      }
+                      ;
                     },
                   ),
                 ],
@@ -599,9 +587,3 @@ class _FirstPageState extends State<FirstPage> {
     }
   }
 }
-
-
-
-
-
-

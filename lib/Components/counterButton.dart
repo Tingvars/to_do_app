@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
-///Counter button class
 class CounterButton extends StatefulWidget {
-  ///Constructor for the counter button
+
   const CounterButton(
       {Key? key,
         required this.count,
@@ -17,30 +15,13 @@ class CounterButton extends StatefulWidget {
         this.progressColor = Colors.black})
       : super(key: key);
 
-  ///Value of the counter displayed in the center
   final int count;
-
-  ///Color of the counter value
   final Color countColor;
-
-  ///Value change callback when the buttons are pressed
   final ValueChanged<int> onChange;
-
-  ///For showing the linear progress indicator
   final bool loading;
-
-  ///Color of the progress indicator
   final Color progressColor;
-
-  ///Color of the icon button
   final Color buttonColor;
-
-  ///Add button icon
-  ///default: Icons.add
   final Icon addIcon;
-
-  ///Remove button icon
-  ///default: Icons.remove
   final Icon removeIcon;
 
   @override

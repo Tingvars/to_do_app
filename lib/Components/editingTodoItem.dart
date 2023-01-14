@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import '../jsonComponents/todojson.dart';
-import 'package:to_do_app/todaystodospage.dart';
-import '../jsonComponents/remote_service.dart';
+import 'package:to_do_app/showtodospage.dart';
+import '../jsonComponents/remoteservice.dart';
 
 class editingTodoItem extends StatefulWidget {
   const editingTodoItem({Key? key, required this.todo, required this.titleString, required this.importance, required this.token, required this.maxLength, required this.language}) : super(key: key);
@@ -25,7 +25,17 @@ class _editingTodoItemState extends State<editingTodoItem> {
   Color color5 = Color(0XFFFFE7DF); //pale orange/brown
   Color color6 = Color(0XFFB6360A); //dark orange/brown
   Color todoColor = Colors.green;
+
   bool initialImportanceLoad = true;
+
+  String lowImpString = "";
+  String medImpString = "";
+  String highImpString = "";
+  String nameOfTodoString = "";
+  String selectDateString = "";
+  String selectTimeString = "";
+  String importanceString = "";
+  String updateButtonString = "";
 
   int editedToDoImportance = 1;
 
@@ -56,11 +66,34 @@ class _editingTodoItemState extends State<editingTodoItem> {
 
     editImportanceLabel() {
       if (editedToDoImportance == 1) {
-        importanceLabel = "Low";
+        importanceLabel = lowImpString;
       } else if (editedToDoImportance == 2) {
-        importanceLabel = "Medium";
+        importanceLabel = medImpString;
       } else if (editedToDoImportance == 3) {
-        importanceLabel = "High";
+        importanceLabel = highImpString;
+      }
+    }
+
+    setLanguage()
+    {
+      if (widget.language == "is") {
+        lowImpString = "Lágt";
+        medImpString = "Miðlungs";
+        highImpString = "Hátt";
+        nameOfTodoString = "Lýsing:";
+        selectDateString = "Velja dag";
+        selectTimeString = "Velja tíma";
+        importanceString = "Mikilvægi:";
+        updateButtonString = "Uppfæra";
+      } else {
+        lowImpString = "Low";
+        medImpString = "Medium";
+        highImpString = "High";
+        nameOfTodoString = "Description:";
+        selectDateString = "Choose date";
+        selectTimeString = "Choose time";
+        importanceString = "Importance:";
+        updateButtonString = "Update";
       }
     }
 
@@ -84,6 +117,8 @@ class _editingTodoItemState extends State<editingTodoItem> {
     if (widget.importance == 3) {
       todoColor = color1;
     }
+
+    setLanguage();
 
     editImportanceLabel();
                 return AlertDialog(
@@ -115,7 +150,7 @@ class _editingTodoItemState extends State<editingTodoItem> {
                               padding: const EdgeInsets.only(bottom: 30.0),
                               child: Column(
                                   children: [
-                                  Text("Name of todo item:"),
+                                  Text(nameOfTodoString),
                               SizedBox(height: 15),
                               SizedBox(
                                 height: 35,
@@ -161,7 +196,7 @@ class _editingTodoItemState extends State<editingTodoItem> {
                                     child: Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          Text("Select date",
+                                          Text(selectDateString,
                                             style: TextStyle(
                                               fontFamily: 'Viking',
                                               fontSize: 15,
@@ -192,7 +227,7 @@ class _editingTodoItemState extends State<editingTodoItem> {
                                     child: Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          Text("Select time",
+                                          Text(selectTimeString,
                                             style: TextStyle(
                                               fontFamily: 'Viking',
                                               fontSize: 15,
@@ -212,7 +247,7 @@ class _editingTodoItemState extends State<editingTodoItem> {
                             padding: const EdgeInsets.only(bottom: 30.0),
                             child: Column(
                               children: [
-                                Text("Importance:"),
+                                Text(importanceString),
                                 SizedBox(
                                     height: 35,
                                     width: 200,
@@ -253,7 +288,7 @@ class _editingTodoItemState extends State<editingTodoItem> {
                                   borderRadius: BorderRadius.all(Radius.circular(90))
                               ),
                               padding: const EdgeInsets.all(16.0),
-                              child: Text("Update",
+                              child: Text(updateButtonString,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontFamily: 'Viking',
@@ -285,15 +320,14 @@ class _editingTodoItemState extends State<editingTodoItem> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => TodaysTodos(userId: widget.todo.userId, maxLength: widget.maxLength, token: widget.token, language: widget.language),
+                                      builder: (context) => ShowTodos(userId: widget.todo.userId, maxLength: widget.maxLength, token: widget.token),
                                     )
                                 );
 
-                              navigateToPage(TodaysTodos(
+                              navigateToPage(ShowTodos(
                                   userId: widget.todo.userId,
                                   maxLength: widget.maxLength,
-                                  token: widget.token,
-                              language: widget.language)
+                                  token: widget.token)
                               );
                               Navigator.of(context).pop();
                             },
